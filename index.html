@@ -42,15 +42,16 @@
             margin-left: 1ch;
         }
 
-        #energy-star-logo {
+        #logo-container {
             width: 180px;
             height: auto;
             text-align: center;
         }
         
-        #energy-star-logo svg {
-            width: 100px;
-            height: 100px;
+        #logo-container img {
+            width: 120px; /* Adjusted size for the new logo */
+            height: auto;
+            margin-top: 10px;
         }
 
         #footer {
@@ -90,20 +91,10 @@
             
             <div id="header-text"></div>
             
-            <div id="energy-star-logo" style="display: none;">
-                <!-- Energy Star Logo SVG -->
-                <svg viewBox="0 0 100 100">
-                    <defs>
-                        <linearGradient id="yellow-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-                            <stop offset="0%" style="stop-color:rgb(255,255,0);stop-opacity:1" />
-                            <stop offset="100%" style="stop-color:rgb(255,200,0);stop-opacity:1" />
-                        </linearGradient>
-                    </defs>
-                    <path d="M50 2 A 48 48 0 1 0 50 98 A 48 48 0 1 0 50 2 Z" stroke="#FFFF00" stroke-width="3" fill="none"/>
-                    <path d="M50,15 L61.8,38.2 L87.1,38.2 L67.6,54.8 L79.4,78 L50,61.4 L20.6,78 L32.4,54.8 L12.9,38.2 L38.2,38.2 Z" fill="url(#yellow-grad)" stroke="#FFFF00" stroke-width="2"/>
-                    <text x="10" y="70" font-family="VT323, monospace" font-size="20" fill="#00FF00" transform="rotate(-15 50 50)">energy</text>
-                </svg>
-                <div style="color:#00FF00; font-size: 14px; letter-spacing: 4px;">EPA POLLUTION PREVENTER</div>
+            <div id="logo-container" style="display: none;">
+                <!-- New Intel Inside Logo -->
+                <img src="https://raw.githubusercontent.com/sndjy1986/DOS/refs/heads/main/100090726.png" alt="Intel Inside Logo" 
+                     onerror="this.style.display='none'">
             </div>
         </div>
         <div id="boot-screen"></div>
@@ -115,7 +106,7 @@
     const headerText = document.getElementById('header-text');
     const bootScreen = document.getElementById('boot-screen');
     const footer = document.getElementById('footer');
-    const logo = document.getElementById('energy-star-logo');
+    const logo = document.getElementById('logo-container');
 
     const headerLines = [
         { text: 'Award Modular BIOS v4.S1PC, An Energy Star Ally\n', delay: 300 },
@@ -201,3 +192,6 @@
 
 </body>
 </html>
+```
+
+I've replaced the SVG logo with a standard `<img>` tag pointing to the new image and renamed the container ID to `#logo-container` for clarity. I also added a fallback `onerror` attribute to the image, so if the URL ever breaks, it will simply hide the image instead of showing a broken image ic
