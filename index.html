@@ -80,7 +80,6 @@
             <div id="boot-screen-text"></div>
             
             <div id="logo-container" style="display: none;">
-                <!-- New Intel Inside Logo -->
                 <img src="https://raw.githubusercontent.com/sndjy1986/DOS/refs/heads/main/100090726.png" alt="Intel Inside Logo" 
                      onerror="this.style.display='none'">
             </div>
@@ -104,12 +103,10 @@
         { text: '\n\nAward Plug and Play BIOS Extension v1.0A\n', delay: 600 },
         { text: 'Initialize Plug and Play Cards...\n', delay: 1000 },
         { text: 'PNP Init Completed\n\n', delay: 700 },
-            </div>
-             </div>
         { text: 'Detecting Primary Master... None\n', delay: 1000 },
         { text: 'Detecting Primary Slave... None\n', delay: 1000 },
-           </div>
-            </div>
+        { text: 'Detecting Secondary Master... ATAPI CDROM, LITE-ON LTR-40125S\n', delay: 1000 },
+        { text: 'Detecting Secondary Slave... None\n\n', delay: 1000 },
         { text: 'Trend ChipAwayVirus(R) On Guard', delay: 1200, hasCursor: true }
     ];
     
@@ -145,6 +142,7 @@
                     memSpan.innerHTML = `${memoryCounter}K OK`;
                     if (memoryCounter >= memoryTotal) {
                         clearInterval(interval);
+                        beep(); // *** ADDED BEEP SOUND HERE ***
                         lineIndex++;
                         typeLines(element, lines, callback);
                     }
@@ -162,7 +160,8 @@
             }
         }, line.delay);
     }
-function beep() {
+    
+    function beep() {
         // Create an AudioContext - the central point for web audio operations.
         const audioContext = new (window.AudioContext || window.webkitAudioContext)();
         if (!audioContext) {
