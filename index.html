@@ -26,7 +26,7 @@
             flex-grow: 1;
         }
 
-        #boot-screen {
+        #boot-screen-text {
             white-space: pre; /* Use pre for exact spacing control */
         }
         
@@ -37,10 +37,6 @@
             width: 100%;
         }
         
-        #header-text {
-            display: inline-block;
-        }
-
         #logo-container {
             width: 200px; /* Increased width of the container */
             height: auto;
@@ -81,7 +77,7 @@
 
     <div id="main-content">
         <div id="header">
-            <div id="header-text"></div>
+            <div id="boot-screen-text"></div>
             
             <div id="logo-container" style="display: none;">
                 <!-- New Intel Inside Logo -->
@@ -89,24 +85,20 @@
                      onerror="this.style.display='none'">
             </div>
         </div>
-        <div id="boot-screen"></div>
     </div>
     
     <div id="footer" style="display: none;"></div>
 
 <script>
-    const headerText = document.getElementById('header-text');
-    const bootScreen = document.getElementById('boot-screen');
+    const bootScreenText = document.getElementById('boot-screen-text');
     const footer = document.getElementById('footer');
     const logo = document.getElementById('logo-container');
 
-    const headerLines = [
+    // All main boot text is now in one array to avoid layout gaps
+    const mainSequence = [
         { text: 'Award Modular BIOS v4.S1PC, An Energy Star Ally\n', delay: 300 },
         { text: 'Copyright (C) 1984-98, Award Software, Inc.', delay: 300, showLogo: true },
-    ];
-
-    const mainLines = [
-        { text: 'ASUS P5A ACPI BIOS Revision 1011 Beta 005\n', delay: 500 }, /* Removed leading \n */
+        { text: '\n\nASUS P5A ACPI BIOS Revision 1011 Beta 005\n', delay: 500 },
         { text: 'AMD-K6(tm)-III/450 Processor\n', delay: 400 },
         { text: 'Memory Test : ', delay: 800, isMemory: true, memoryTotal: 262144 },
         { text: '\n\nAward Plug and Play BIOS Extension v1.0A\n', delay: 600 },
@@ -167,17 +159,13 @@
 
     // --- Boot Sequence ---
     
-    // 1. Type Header
+    // 1. Type the main sequence into the single text element
     lineIndex = 0;
-    typeLines(headerText, headerLines, () => {
-        // 2. Type Main Content
-        lineIndex = 0;
-        typeLines(bootScreen, mainLines, () => {
-             // 3. Show and Type Footer
-             footer.style.display = 'block';
-             lineIndex = 0;
-             typeLines(footer, footerLines, null);
-        });
+    typeLines(bootScreenText, mainSequence, () => {
+         // 2. Show and Type Footer
+         footer.style.display = 'block';
+         lineIndex = 0;
+         typeLines(footer, footerLines, null);
     });
 
 </script>
