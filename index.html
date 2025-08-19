@@ -3,90 +3,200 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DOS Boot</title>
+    <title>Award BIOS Boot</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
+
         body {
-            background-color: #000000; /* Black background */
-            color: #FFFFFF;            /* White text */
-            font-family: 'Perfect DOS VGA', 'Lucida Console', 'Courier New', monospace;
-            font-size: 16px;
+            background-color: #000000;
+            color: #c0c0c0; /* Light gray for a more authentic feel */
+            font-family: 'VT323', 'Lucida Console', 'Courier New', monospace;
+            font-size: 22px; /* Increased font size for better readability */
+            line-height: 1.2;
             overflow: hidden;
             margin: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
             padding: 20px;
+            box-sizing: border-box;
         }
+
+        #main-content {
+            flex-grow: 1;
+        }
+
         #boot-screen {
-            white-space: pre-wrap; /* Allows text to wrap and respects whitespace */
+            white-space: pre; /* Use pre for exact spacing control */
         }
+        
+        #header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            width: 100%;
+        }
+        
+        #header-text {
+            display: inline-block;
+            margin-left: 1ch;
+        }
+
+        #energy-star-logo {
+            width: 180px;
+            height: auto;
+            text-align: center;
+        }
+        
+        #energy-star-logo svg {
+            width: 100px;
+            height: 100px;
+        }
+
+        #footer {
+            width: 100%;
+            padding-top: 20px;
+        }
+
         .cursor {
-            background-color: #FFFFFF;
-            animation: blink 1s step-end infinite;
+            background-color: #c0c0c0;
+            color: #000000;
+            animation: blink 0.9s step-end infinite;
         }
+        
+        .highlight {
+            color: #ffffff;
+            font-weight: bold;
+        }
+
         @keyframes blink {
             50% {
                 background-color: transparent;
+                color: inherit;
             }
         }
     </style>
 </head>
 <body>
 
-<div id="boot-screen"></div>
+    <div id="main-content">
+        <div id="header">
+            <!-- Blue BIOS Icon SVG -->
+            <svg width="20" height="20" viewBox="0 0 100 100" style="margin-top: 5px;">
+                <rect width="100" height="100" fill="#0000AA"/>
+                <path d="M20,50 L50,20 L80,50 L50,80 Z" fill="#FFFFFF"/>
+                <circle cx="50" cy="50" r="10" fill="#0000AA"/>
+            </svg>
+            
+            <div id="header-text"></div>
+            
+            <div id="energy-star-logo" style="display: none;">
+                <!-- Energy Star Logo SVG -->
+                <svg viewBox="0 0 100 100">
+                    <defs>
+                        <linearGradient id="yellow-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:rgb(255,255,0);stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:rgb(255,200,0);stop-opacity:1" />
+                        </linearGradient>
+                    </defs>
+                    <path d="M50 2 A 48 48 0 1 0 50 98 A 48 48 0 1 0 50 2 Z" stroke="#FFFF00" stroke-width="3" fill="none"/>
+                    <path d="M50,15 L61.8,38.2 L87.1,38.2 L67.6,54.8 L79.4,78 L50,61.4 L20.6,78 L32.4,54.8 L12.9,38.2 L38.2,38.2 Z" fill="url(#yellow-grad)" stroke="#FFFF00" stroke-width="2"/>
+                    <text x="10" y="70" font-family="VT323, monospace" font-size="20" fill="#00FF00" transform="rotate(-15 50 50)">energy</text>
+                </svg>
+                <div style="color:#00FF00; font-size: 14px; letter-spacing: 4px;">EPA POLLUTION PREVENTER</div>
+            </div>
+        </div>
+        <div id="boot-screen"></div>
+    </div>
+    
+    <div id="footer" style="display: none;"></div>
 
 <script>
+    const headerText = document.getElementById('header-text');
     const bootScreen = document.getElementById('boot-screen');
-    const lines = [
-        { text: 'Award Modular BIOS v4.51PG, An Energy Star Ally\n', delay: 500 },
-        { text: 'Copyright (C) 1984-95, Award Software, Inc.\n\n', delay: 300 },
-        { text: 'Memory Test: ', delay: 800, isMemory: true, memoryTotal: 65536 },
-        { text: '\n\nDetecting floppy drive A: ... Found\n', delay: 1000 },
-        { text: 'Detecting primary master ... 128MB SCSI Hard Drive Found\n', delay: 1500 },
-        { text: 'Detecting primary slave ... None\n', delay: 500 },
-        { text: 'Detecting secondary master ... CD-ROM\n', delay: 500 },
-        { text: 'Detecting secondary slave ... None\n\n', delay: 500 },
-        { text: 'Loading MS-DOS...\n', delay: 1200 },
-        { text: 'Starting...\n', delay: 500 },
-        { text: '\nC:\\> ', delay: 200, isPrompt: true }
+    const footer = document.getElementById('footer');
+    const logo = document.getElementById('energy-star-logo');
+
+    const headerLines = [
+        { text: 'Award Modular BIOS v4.S1PC, An Energy Star Ally\n', delay: 300 },
+        { text: 'Copyright (C) 1984-98, Award Software, Inc.', delay: 300, showLogo: true },
     ];
 
-    let currentLine = 0;
+    const mainLines = [
+        { text: '\nASUS P5A ACPI BIOS Revision 1011 Beta 005\n', delay: 500 },
+        { text: 'AMD-K6(tm)-III/450 Processor\n', delay: 400 },
+        { text: 'Memory Test : ', delay: 800, isMemory: true, memoryTotal: 262144 },
+        { text: '\n\nAward Plug and Play BIOS Extension v1.0A\n', delay: 600 },
+        { text: 'Initialize Plug and Play Cards...\n', delay: 1000 },
+        { text: 'PNP Init Completed\n\n', delay: 700 },
+        { text: 'Trend ChipAwayVirus(R) On Guard', delay: 1200, hasCursor: true }
+    ];
+    
+    const footerLines = [
+        { text: 'Press <span class="highlight">DEL</span> to enter SETUP\n', delay: 1500 },
+        { text: '05/03/2002-ALADDIN5-&lt;&lt;P5A&gt;&gt;', delay: 300 }
+    ];
 
-    function processBootSequence() {
-        if (currentLine >= lines.length) return;
+    let lineIndex = 0;
 
-        const line = lines[currentLine];
+    function typeLines(element, lines, callback) {
+        if (lineIndex >= lines.length) {
+            if (callback) callback();
+            return;
+        }
+
+        const line = lines[lineIndex];
         setTimeout(() => {
+            if (line.showLogo) {
+                logo.style.display = 'block';
+            }
+            
             if (line.isMemory) {
                 let memoryCounter = 0;
                 const memoryTotal = line.memoryTotal;
-                bootScreen.innerHTML += line.text;
+                element.innerHTML += line.text;
+                const memSpan = document.createElement('span');
+                element.appendChild(memSpan);
+
                 const interval = setInterval(() => {
-                    memoryCounter += 1024;
+                    memoryCounter += 4096; // Count up faster
                     if (memoryCounter > memoryTotal) memoryCounter = memoryTotal;
-                    // \r moves the cursor to the beginning of the line
-                    bootScreen.innerHTML = bootScreen.innerHTML.replace(/\d+K OK$/, '') + `${memoryCounter}K OK`;
+                    memSpan.innerHTML = `${memoryCounter}K OK`;
                     if (memoryCounter >= memoryTotal) {
                         clearInterval(interval);
-                        currentLine++;
-                        processBootSequence();
+                        lineIndex++;
+                        typeLines(element, lines, callback);
                     }
-                }, 50); // Speed of memory count
-            } else if (line.isPrompt) {
-                bootScreen.innerHTML += line.text;
-                // Add blinking cursor at the end
-                const cursorSpan = document.createElement('span');
-                cursorSpan.innerHTML = '&nbsp;'; // Non-breaking space
-                cursorSpan.classList.add('cursor');
-                bootScreen.appendChild(cursorSpan);
+                }, 20); // Speed of memory count
             } else {
-                bootScreen.innerHTML += line.text;
-                currentLine++;
-                processBootSequence();
+                element.innerHTML += line.text;
+                if (line.hasCursor) {
+                    const cursorSpan = document.createElement('span');
+                    cursorSpan.innerHTML = '_';
+                    cursorSpan.classList.add('cursor');
+                    element.appendChild(cursorSpan);
+                }
+                lineIndex++;
+                typeLines(element, lines, callback);
             }
         }, line.delay);
     }
 
-    // Start the boot sequence
-    processBootSequence();
+    // --- Boot Sequence ---
+    
+    // 1. Type Header
+    lineIndex = 0;
+    typeLines(headerText, headerLines, () => {
+        // 2. Type Main Content
+        lineIndex = 0;
+        typeLines(bootScreen, mainLines, () => {
+             // 3. Show and Type Footer
+             footer.style.display = 'block';
+             lineIndex = 0;
+             typeLines(footer, footerLines, null);
+        });
+    });
+
 </script>
 
 </body>
