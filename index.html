@@ -39,17 +39,16 @@
         
         #header-text {
             display: inline-block;
-            margin-left: 1ch;
         }
 
         #logo-container {
-            width: 280px;
+            width: 200px; /* Increased width of the container */
             height: auto;
             text-align: center;
         }
         
         #logo-container img {
-            width: 120px; /* Adjusted size for the new logo */
+            width: 180px; /* Increased size of the logo image */
             height: auto;
             margin-top: 10px;
         }
@@ -82,6 +81,10 @@
 
     <div id="main-content">
         <div id="header">
+            <div id="header-text"></div>
+            
+            <div id="logo-container" style="display: none;">
+                <!-- New Intel Inside Logo -->
                 <img src="https://raw.githubusercontent.com/sndjy1986/DOS/refs/heads/main/100090726.png" alt="Intel Inside Logo" 
                      onerror="this.style.display='none'">
             </div>
