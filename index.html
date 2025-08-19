@@ -6,8 +6,8 @@
     <title>DOS Boot</title>
     <style>
         body {
-            background-color: #0000AA; /* Classic DOS blue screen */
-            color: #FFFFFF;
+            background-color: #000000; /* Black background */
+            color: #FFFFFF;            /* White text */
             font-family: 'Perfect DOS VGA', 'Lucida Console', 'Courier New', monospace;
             font-size: 16px;
             overflow: hidden;
@@ -35,16 +35,16 @@
 <script>
     const bootScreen = document.getElementById('boot-screen');
     const lines = [
-        { text: 'Award Modular BIOS v4.51PG, An Energy Star Ally', delay: 500 },
-        { text: 'Copyright (C) 1984-95, Award Software, Inc.\n', delay: 300 },
+        { text: 'Award Modular BIOS v4.51PG, An Energy Star Ally\n', delay: 500 },
+        { text: 'Copyright (C) 1984-95, Award Software, Inc.\n\n', delay: 300 },
         { text: 'Memory Test: ', delay: 800, isMemory: true, memoryTotal: 65536 },
-        { text: '\n\nDetecting floppy drive A: ... Found', delay: 1000 },
-        { text: 'Detecting primary master ... GENERIC IDE DISK TYPE47', delay: 1500 },
-        { text: 'Detecting primary slave ... None', delay: 500 },
-        { text: 'Detecting secondary master ... CD-ROM', delay: 500 },
-        { text: 'Detecting secondary slave ... None\n', delay: 500 },
-        { text: 'Loading MS-DOS...', delay: 1200 },
-        { text: 'Starting...', delay: 500 },
+        { text: '\n\nDetecting floppy drive A: ... Found\n', delay: 1000 },
+        { text: 'Detecting primary master ... 128MB SCSI Hard Drive Found\n', delay: 1500 },
+        { text: 'Detecting primary slave ... None\n', delay: 500 },
+        { text: 'Detecting secondary master ... CD-ROM\n', delay: 500 },
+        { text: 'Detecting secondary slave ... None\n\n', delay: 500 },
+        { text: 'Loading MS-DOS...\n', delay: 1200 },
+        { text: 'Starting...\n', delay: 500 },
         { text: '\nC:\\> ', delay: 200, isPrompt: true }
     ];
 
