@@ -99,10 +99,12 @@
         { text: 'Award Modular BIOS v4.S1PC, An Energy Star Ally\n', delay: 300 },
         { text: 'Copyright (C) 1984-98, Award Software, Inc.', delay: 300, showLogo: true },
         { text: '\n\nASUS P5A ACPI BIOS Revision 1011 Beta 005\n', delay: 500 },
-        { text: 'AMD-K6(tm)-III/450 Processor\n', delay: 400 },
+        { text: 'Main Processor : AMD-K6(tm)-III/450 Processor\n', delay: 400 },
         { text: 'Memory Test : ', delay: 800, isMemory: true, memoryTotal: 262144 },
         { text: '\n\nAward Plug and Play BIOS Extension v1.0A\n', delay: 600 },
         { text: 'Initialize Plug and Play Cards...\n', delay: 1000 },
+        { text: 'Detecting Primary Master... None\n', delay: 1000 },
+        { text: 'Detecting Primary Slave... None\n', delay: 1000 },
         { text: 'PNP Init Completed\n\n', delay: 700 },
         { text: 'Trend ChipAwayVirus(R) On Guard', delay: 1200, hasCursor: true }
     ];
@@ -156,7 +158,33 @@
             }
         }, line.delay);
     }
+function beep() {
+        // Create an AudioContext - the central point for web audio operations.
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        if (!audioContext) {
+            console.error("Web Audio API is not supported in this browser.");
+            return;
+        }
 
+        // Create an Oscillator - this generates a sound wave.
+        const oscillator = audioContext.createOscillator();
+        // Create a GainNode - this controls the volume.
+        const gainNode = audioContext.createGain();
+
+        // Connect the oscillator to the gain node, and the gain node to the final output (speakers).
+        oscillator.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+
+        // Configure the sound
+        oscillator.type = 'square'; // 'square' wave sounds more like a classic PC beep than 'sine'.
+        oscillator.frequency.setValueAtTime(1000, audioContext.currentTime); // Frequency in Hz (1000 is a good pitch)
+        gainNode.gain.setValueAtTime(0.1, audioContext.currentTime); // Set volume (0.1 is not too loud)
+
+        // Start the sound now
+        oscillator.start();
+        // Stop the sound after a short duration (150ms)
+        oscillator.stop(audioContext.currentTime + 0.15);
+    }
     // --- Boot Sequence ---
     
     // 1. Type the main sequence into the single text element
