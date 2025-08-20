@@ -9,9 +9,9 @@
 
         body {
             background-color: #000000;
-            color: #c0c0c0; /* Light gray for a more authentic feel */
+            color: #c0c0c0;
             font-family: 'VT323', 'Lucida Console', 'Courier New', monospace;
-            font-size: 22px; /* Increased font size for better readability */
+            font-size: 22px;
             line-height: 1.2;
             overflow: hidden;
             margin: 0;
@@ -27,7 +27,7 @@
         }
 
         #boot-screen-text {
-            white-space: pre; /* Use pre for exact spacing control */
+            white-space: pre;
         }
         
         #header {
@@ -37,14 +37,8 @@
             width: 100%;
         }
         
-        #logo-container {
-            width: 200px; /* Increased width of the container */
-            height: auto;
-            text-align: center;
-        }
-        
         #logo-container img {
-            width: 270px; /* Increased size of the logo image */
+            width: 350px;
             height: auto;
             margin-top: 10px;
         }
@@ -93,17 +87,16 @@
     const footer = document.getElementById('footer');
     const logo = document.getElementById('logo-container');
 
-    // All main boot text is now in one array to avoid layout gaps
     const mainSequence = [
         { text: 'Award Modular BIOS v4.S1PC, An Energy Star Ally\n', delay: 300 },
         { text: 'Copyright (C) 1984-98, Award Software, Inc.', delay: 300, showLogo: true },
         { text: '\n\nASUS P5A ACPI BIOS Revision 1011 Beta 005\n', delay: 500 },
         { text: 'Main Processor : AMD-K6(tm)-III/450 Processor\n', delay: 400 },
-        { text: 'Memory Test : ', delay: 800, isMemory: true, memoryTotal: 262144 },
+        { text: 'Memory Test : ', delay: 800, isMemory: true, memoryTotal: 797525 },
         { text: '\n\nAward Plug and Play BIOS Extension v1.0A\n', delay: 600 },
         { text: 'Initialize Plug and Play Cards...\n', delay: 1000 },
         { text: 'PNP Init Completed\n\n', delay: 700 },
-        { text: '\n\nDetecting Primary Master... None\n', delay: 1000 },
+        { text: '\n\nDetecting Primary Master... Maxtor55MB4500RPM SCSI \n', delay: 1000 },
         { text: 'Detecting Primary Slave... None\n' , delay: 1000 },
         { text: 'Detecting Secondary Master... ATAPI CDROM, LITE-ON LTR-40125S\n', delay: 1000 },
         { text: 'Detecting Secondary Slave... None\n\n', delay: 1000 },
@@ -137,16 +130,16 @@
                 element.appendChild(memSpan);
 
                 const interval = setInterval(() => {
-                    memoryCounter += 4096; // Count up faster
+                    memoryCounter += 4096;
                     if (memoryCounter > memoryTotal) memoryCounter = memoryTotal;
                     memSpan.innerHTML = `${memoryCounter}K OK`;
                     if (memoryCounter >= memoryTotal) {
                         clearInterval(interval);
-                        beep(); // *** ADDED BEEP SOUND HERE ***
+                        beep();
                         lineIndex++;
                         typeLines(element, lines, callback);
                     }
-                }, 20); // Speed of memory count
+                }, 40);
             } else {
                 element.innerHTML += line.text;
                 if (line.hasCursor) {
@@ -162,43 +155,166 @@
     }
     
     function beep() {
-        // Create an AudioContext - the central point for web audio operations.
         const audioContext = new (window.AudioContext || window.webkitAudioContext)();
         if (!audioContext) {
             console.error("Web Audio API is not supported in this browser.");
             return;
         }
 
-        // Create an Oscillator - this generates a sound wave.
         const oscillator = audioContext.createOscillator();
-        // Create a GainNode - this controls the volume.
         const gainNode = audioContext.createGain();
 
-        // Connect the oscillator to the gain node, and the gain node to the final output (speakers).
         oscillator.connect(gainNode);
         gainNode.connect(audioContext.destination);
 
-        // Configure the sound
-        oscillator.type = 'square'; // 'square' wave sounds more like a classic PC beep than 'sine'.
-        oscillator.frequency.setValueAtTime(1000, audioContext.currentTime); // Frequency in Hz (1000 is a good pitch)
-        gainNode.gain.setValueAtTime(0.1, audioContext.currentTime); // Set volume (0.1 is not too loud)
+        oscillator.type = 'square'; 
+        oscillator.frequency.setValueAtTime(1000, audioContext.currentTime); 
+        gainNode.gain.setValueAtTime(0.1, audioContext.currentTime); 
 
-        // Start the sound now
         oscillator.start();
-        // Stop the sound after a short duration (150ms)
         oscillator.stop(audioContext.currentTime + 0.15);
     }
+
     // --- Boot Sequence ---
-    
-    // 1. Type the main sequence into the single text element
     lineIndex = 0;
     typeLines(bootScreenText, mainSequence, () => {
-         // 2. Show and Type Footer
          footer.style.display = 'block';
          lineIndex = 0;
-         typeLines(footer, footerLines, null);
+         typeLines(footer, footerLines, () => {
+              setTimeout(showConfigScreen, 2000);
+         });
     });
 
+    function showConfigScreen() {
+        // Clear the body and apply new styles for the BIOS screen
+        document.body.innerHTML = `
+            <div id="config-container">
+                <div id="config-header">
+                    <p>PhoenixBIOS(tm) Setup Utility</p>
+                </div>
+                <div id="config-content">
+<pre>
+CPU Type         : AMD-K6(tm)-III/450  Base Memory      : 640K
+Co-Processor     : Installed           Extended Memory  : 796928K
+CPU Clock        : 450MHz              Cache Memory     : 512K
+</pre>
+                    <hr>
+<pre>
+Diskette Drive A : 1.44M, 3.5 in.      Display Type     : EGA/VGA
+Diskette Drive B : None                Serial Port(s)   : 3F8 2F8
+Pri. Master Disk : Maxtor55MB4500RPM   Parallel Port(s) : 378
+Pri. Slave Disk  : None                Bank0/1 DRAM Type: EDO
+Sec. Master Disk : LITE-ON LTR-40125S  Bank2/3 DRAM Type: None
+Sec. Slave Disk  : None                Bank4/5 DRAM Type: None
+</pre>
+                    <hr>
+                </div>
+                <div id="config-footer">
+                    <p>ESC:Exit  F1:Help  &uarr;&darr;:Select Item  PU/PD:Modify</p>
+                </div>
+            </div>
+        `;
+        
+        const style = document.createElement('style');
+        style.innerHTML = `
+            @import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
+            
+            body {
+                background-color: #000;
+                padding: 0;
+                margin: 0;
+                height: 100vh;
+                overflow: hidden;
+                display: flex; /* Ensure body is flex for centering */
+                align-items: flex-start; /* Align container to the top */
+                justify-content: center; /* Center horizontally */
+            }
+
+            #config-container {
+                background-color: #000000;
+                color: #c0c0c0;
+                font-family: 'VT323', 'Lucida Console', 'Courier New', monospace;
+                font-size: 24px;
+                width: 100%;
+                max-width: 1024px; /* Set a max-width for better appearance */
+                border: 2px double #c0c0c0;
+                box-sizing: border-box;
+                margin-top: 0; /* Remove any top margin */
+                padding: 5px;
+            }
+
+            #config-header, #config-footer {
+                background-color: #808080;
+                color: #000000;
+                text-align: center;
+                padding: 2px 0;
+            }
+            
+            #config-header p, #config-footer p {
+                margin: 0;
+                padding: 0;
+            }
+
+            #config-content {
+                padding: 10px 20px;
+            }
+
+            #config-content pre {
+                font-family: 'VT323', 'Lucida Console', 'Courier New', monospace;
+                font-size: 24px;
+                color: #c0c0c0;
+                margin: 10px 0;
+                white-space: pre;
+                line-height: 1.3;
+            }
+
+            #config-content hr {
+                border: none;
+                border-top: 2px solid #c0c0c0;
+                margin: 5px 0;
+            }
+        `;
+        // Remove old styles
+        const oldStyles = document.head.querySelectorAll('style');
+        oldStyles.forEach(s => s.remove());
+        // Add new styles
+        document.head.appendChild(style);
+        
+        // Wait 3 seconds then start DOS
+        setTimeout(startDOS, 3000);
+    }
+
+    function startDOS() {
+        document.body.innerHTML = `<div id="dos-prompt"></div>`;
+        const dosPrompt = document.getElementById('dos-prompt');
+        dosPrompt.innerHTML = `Starting MS-DOS 6.22...<br><br>C:\\><span class="cursor">_</span>`;
+
+        const style = document.createElement('style');
+        style.innerHTML = `
+            @import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
+            body {
+                background-color: #000;
+                color: #c0c0c0;
+                font-family: 'VT323', 'Lucida Console', 'Courier New', monospace;
+                font-size: 22px;
+                padding: 20px;
+            }
+            .cursor {
+                background-color: #c0c0c0;
+                color: #000000;
+                animation: blink 0.9s step-end infinite;
+            }
+            @keyframes blink {
+                50% {
+                    background-color: transparent;
+                    color: inherit;
+                }
+            }
+        `;
+        const oldStyles = document.head.querySelectorAll('style');
+        oldStyles.forEach(s => s.remove());
+        document.head.appendChild(style);
+    }
 </script>
 
 </body>
